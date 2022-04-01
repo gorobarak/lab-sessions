@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 int main(int argc, char* argv[]){
     FILE* in = stdin;
@@ -17,27 +18,27 @@ int main(int argc, char* argv[]){
             return 1; //error
         }
     }
-    
+
     int ch = fgetc(in);
     while(ch != EOF){
-        if ( 64 < ch && ch <91){
-            fputc(46,out);// 46 == .
+        int b = ch;
+        if ( 64 < ch && ch <91){ //is ch uppercase?
             counter++;
-            if(debug){
-                fprintf(err, "%i %i", ch,46);
-            }
+            b = 46;
         }
-        else{
-            fputc(ch,out);
-            if(debug){
-                fprintf(err,"%i %i", ch,ch);
+        if(debug){ //output to err, ch before and after conversion
+            if(ch != 10){
+                fprintf(err,"%i %i\n",ch,b);
             }
+            else{
+                fprintf(err, "the number of letters converted: %i\n", counter);
+            }
+            
         }
+        fputc(b,out);
         ch = fgetc(in);
     }
-    if(debug){
-        fprintf(err, "the number of letters: %i", counter);
-    }
-    printf("/n");
+    
+    printf("\n");
     return 0;
 }
