@@ -2,95 +2,122 @@
 #include <stdio.h>
 #include <string.h>
 
-int whatDigit(int ch){
-    // printf(" ch  = %d\n", ch);
-    if (ch < 48 || ch > 70){
-        return 0; 
-    }
-    if (ch < 58){
+int calDigit(int ch){
+    if (47 < ch && ch < 58)
+    {
         return ch - 48;
     }
-    if (ch > 64){
-        return ch - 65 + 10;
+    else if (64 < ch && ch < 71 )
+    {
+        return ch - 65 + 10 ;
     }
-    return 0;
+    else{
+        return 0;
+    }
 }
-void dupEnc(int enc){
+
+void regularEnc(int debug){
     int ch = fgetc(stdin);
-    int firstch = ch;
-    while(1){
-        if(ch == '\n')// 10 == \n
-            while (enc != 0){
-                fputc(firstch, stdout);
-                enc--;
+    int counter = 0;
+    while(ch != EOF){
+        int b = ch;
+        if ( 64 < ch && ch <91){ //is ch uppercase?
+            counter++;
+            b = 46;
+        }
+        if(debug){ //output to err, ch before and after conversion
+            if(ch != 10){
+                fprintf(stderr,"%i %i\n",ch,b);
             }
-        else{
-            if (ch == EOF){
+            else{
+                fprintf(stderr, "the number of letters converted: %i\n", counter);
+            }
+            
+        }
+        fputc(b,stdout);
+        ch = fgetc(stdin);
+    }
+    
+    printf("\n");
+}
+
+void dupEnc(int digit){
+    //printf("hello from inside dupEnc\n");
+    
+    int ch;
+    int firstch;
+    firstch = fgetc(stdin);
+    ch = firstch;
+    while(firstch != EOF){
+        while(ch != '\n'){
+            if(ch == EOF){
                 return;
             }
             fputc(ch, stdout);
+            ch = fgetc(stdin);
         }
-        ch  = fgetc(stdin);
+        for(int i = digit; i > 0 ; i--){
+            fputc(firstch,stdout);
+        }
+        printf("\n");
+        firstch = fgetc(stdin);
+        ch = firstch;
     }
+
+    printf("\n");
+    return;
 }
-void rmEnc(int enc){
-    int ch  = fgetc(stdin);
+
+void rmEnc(int digit){
+    int ch = fgetc(stdin);
     while(ch != EOF){
-        for(int i  = enc; i > 0; i--){
+        for(int i = digit; i > 0; i--){
             if(ch == '\n'){
-                printf("-NONE-");
-                return;
+                printf("-NONE-\n");
+                break;
             }
             ch = fgetc(stdin);
-            }
-        
+        }
         while(ch != '\n'){
             fputc(ch, stdout);
             ch = fgetc(stdin);
         }
+        printf("\n");
+        ch = fgetc(stdin);
+
     }
+    return;
 }
-    
 
 int main(int argc, char* argv[]){
-    // FILE* in = stdin;
-    // FILE* out = stdout;
-    // FILE* err = stderr;
-    int debug = 0;
-    int enc = 0;
-    int sign;
     int i;
-
-    for(i = 1; i < argc; i++){
-        if (strcmp("-D", argv[i]) == 0){
+    int debug = 0;
+    int digit = 0;
+    for(i = 1; i < argc; i++)
+    {
+        if(strncmp(argv[i], "+e", 2) == 0 || strncmp(argv[i], "-e", 2) == 0)
+        {
+            // printf("HEllo from inside +e or -e\n");
+            // printf("the value the evaluation is - %d\n", strncmp(argv[i],"+",1));
+            //puting aside the fact that there can be an edge case where more than 1 digit was given.
+            digit = calDigit(argv[i][2]);
+            (strncmp(argv[i],"+",1) == 0) ? dupEnc(digit) : rmEnc(digit);
+        }
+        else if(strcmp(argv[i], "-D") == 0)
+        {
             debug = 1;
+            regularEnc(debug);
         }
-        else if(strncmp("+e", argv[i], 2) == 0 || strncmp("-e", argv[i], 2) == 0 ){
-            enc = whatDigit(argv[i][2]);
-            // printf(" bla - %d\n",argv[i][2]);
-            // printf("%d", enc);
-            sign  = (strncmp("+e", argv[i], 2) == 0) ? 1 : -1;
-            if (enc == 0)
-            {
-            printf(" Argument of out of range - %c" , argv[i][3]);
-            return 1; 
-            } 
-        }
-        else{
+        else
+        {
             printf("Invalid Parameters - %s\n", argv[i]);
             return 1; //error
         }
     }
-
-    if (sign == 1){
-        dupEnc(enc);
+    if (argc == 0){
+        regularEnc(debug); 
     }
-    else{
-        rmEnc(enc);
-    }
-    
-
-    
     printf("\n");
     return 0;
+
 }

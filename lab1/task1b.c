@@ -14,7 +14,7 @@ int main(int argc, char* argv[]){
             debug = 1;
         }
         else{
-            printf("Invalid Parameters -%s\n", argv[i]);
+            printf("Invalid Parameters - %s\n", argv[i]);
             return 1; //error
         }
     }
