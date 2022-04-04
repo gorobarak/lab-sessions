@@ -19,7 +19,7 @@ int calDigit(int ch){
     }
 }
 
-void regularEnc(int debug, FILE* instream, FILE* outstream){
+void regularEnc(int debug, FILE* instream, FILE* outstream, char* inputName , char* outputName){
     int ch = fgetc(instream);
     int counter = 0;
     while(ch != EOF){
@@ -34,6 +34,7 @@ void regularEnc(int debug, FILE* instream, FILE* outstream){
             }
             else{
                 fprintf(stderr, "the number of letters converted: %i\n", counter);
+                fprintf(stderr, "the input file name is  %s\nthe output filename is %s\n",inputName, outputName);
             }
             
         }
@@ -101,8 +102,10 @@ int main(int argc, char* argv[]){
     int rmEncFlag = 0;
     FILE* instream = stdin;
     FILE* outstream = stdout;
+    char* inputName = "-NO INPUT GIVEN-";
+    char* outputName = "-NO OUTPUT GIVEN-";
     if (argc == 0){
-        regularEnc(0, instream, outstream);
+        regularEnc(0, instream, outstream, inputName, outputName);
         printf("\n");
         return 0; 
     }
@@ -129,9 +132,11 @@ int main(int argc, char* argv[]){
         else if(strncmp(argv[i], "-i",2) == 0){
             //printf("filename is - %s", substring(argv[i]));
             instream = fopen(substring(argv[i]),"r");
+            inputName = substring(argv[i]);
         }
         else if(strncmp(argv[i], "-o", 2) ==  0){
             outstream = fopen(substring(argv[i]),"w");
+            outputName = substring(argv[i]);
         }
         else
         {
@@ -150,7 +155,7 @@ int main(int argc, char* argv[]){
     }
     else
     {
-        regularEnc(debug, instream, outstream);
+        regularEnc(debug, instream, outstream,inputName, outputName);
     }
     fclose(instream);
     fclose(outstream);

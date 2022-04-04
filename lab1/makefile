@@ -11,4 +11,4 @@ task1d: task1d.c
 	gcc -g -Wall -m32 -o task1d task1d.c
 
 clean:
-	rm -f *.o task1a task1b task1c
+	rm -f *.o task1a task1b task1c task1d
