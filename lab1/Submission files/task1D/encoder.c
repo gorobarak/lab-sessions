@@ -6,13 +6,13 @@ char* substring(char* str){
     return str + 2;
 }
 int calDigit(int ch){
-    if (47 < ch && ch < 58)
+    if ('0' <= ch && ch <= '9')
     {
-        return ch - 48;
+        return ch - '0';
     }
-    else if (64 < ch && ch < 71 )
+    else if ('A' <= ch && ch <= 'F' )
     {
-        return ch - 65 + 10 ;
+        return ch - 'A' + 10 ;
     }
     else{
         return -1;
@@ -24,7 +24,7 @@ void regularEnc(int debug, FILE* instream, FILE* outstream, char* inputName , ch
     int counter = 0;
     while(ch != EOF){
         int b = ch;
-        if ( 64 < ch && ch <91){ //is ch uppercase?
+        if ( 64 < ch && ch < 91){ //is ch uppercase?
             counter++;
             b = 46;
         }

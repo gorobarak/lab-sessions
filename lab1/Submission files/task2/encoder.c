@@ -6,13 +6,13 @@ char* substring(char* str){
     return str + 2;
 }
 int calDigit(int ch){
-    if (47 < ch && ch < 58)
+    if ('0' <= ch && ch <= '9')
     {
-        return ch - 48;
+        return ch - '0';
     }
-    else if (64 < ch && ch < 71 )
+    else if ('A' < ch && ch < 'F' )
     {
-        return ch - 65 + 10 ;
+        return ch - 'A' + 10 ;
     }
     else{
         return -1;
