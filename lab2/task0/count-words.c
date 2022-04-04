@@ -1,13 +1,17 @@
 /* $Id: count-words.c 858 2010-02-21 10:26:22Z tolpin $ */
-
 #include <stdio.h>
 #include <string.h>
 
 /* return string "word" if the count is 1 or "words" otherwise */
-char *words(int count) {
-  char *words = "words";
+char* words(int count) {
+  char* words = "words";
   if(count==1) 
-    words[strlen(words)-1] = '\0';
+    return "word";
+    //words[strlen(words) -1] = '\0';
+    //TODO: what is the solution here?
+    //from one side you cant change char* variable
+    // on the other side retuning local variable also doesn't work
+    // why is char* not a local variable and char words[] is?
   return words;
 }
 
