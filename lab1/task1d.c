@@ -62,12 +62,12 @@ void dupEnc(int digit, FILE* instream, FILE* outstream){
         for(int i = digit; i > 0 ; i--){
             fputc(firstch,outstream);
         }
-        printf("\n");
+        fputc('\n', outstream);
         firstch = fgetc(instream);
         ch = firstch;
     }
 
-    printf("\n");
+    fputc('\n', outstream);
     return;
 }
 
@@ -114,8 +114,8 @@ int main(int argc, char* argv[]){
             
             //puting aside the fact that there can be an edge case where more than 1 digit was given.
             digit = calDigit(argv[i][2]);
-            if (digit == -1){
-                printf("Parameter out of bounds - %c\n", argv[i][2]);
+            if (digit == -1 || argv[i][3] != 0){
+                printf("Invalid parameters \n");
                 return 0;
             }
 
