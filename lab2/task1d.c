@@ -14,6 +14,6 @@ int main(){
         
     }
     printf("p's address - %p\n",p);
-    testing
+    
     return 0;
 }

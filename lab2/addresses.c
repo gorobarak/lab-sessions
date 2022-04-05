@@ -14,6 +14,7 @@ int main (int argc, char** argv){
     int addr2;
     int addr3;
     char* yos="ree";
+    int* a = 4;
     int * addr4 = (int*)(malloc(50));
     printf("- &addr2: %p\n",&addr2);
     printf("- &addr3: %p\n",&addr3);
@@ -24,7 +25,7 @@ int main (int argc, char** argv){
 	
     printf("- &addr6: %p\n",&addr6);
     printf("- yos: %p\n",yos);
-    printf("- addr4: %p\n",addr4);
+    printf("- addr4: %p\n","ree");
     printf("- &addr4: %p\n",&addr4);
     
     printf("- &foo1: %p\n" ,&foo1);

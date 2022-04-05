@@ -12,14 +12,14 @@ int main(){
     char* carrayPlus = carray+1;
 
     
-    printf("- &iarray: %p\n",&iarray);
-    printf("- &iarray+1: %p\n",&(iarrayPlus));
-    printf("- &farray: %p\n",&(farray));
-    printf("- &farray+1: %p\n",&(farrayPlus));
-    printf("- &darray: %p\n",&(darray));
-    printf("- &darray+1: %p\n",&(darrayPlus));
-    printf("- &carray: %p\n",&(carray));
-    printf("- &carray+1: %p\n",&(carrayPlus));
+    printf("- &iarray: %p\n",iarray);
+    printf("- &iarray+1: %p\n",iarrayPlus);
+    printf("- &farray: %p\n",farray);
+    printf("- &farray+1: %p\n",farrayPlus);
+    printf("- &darray: %p\n",darray);
+    printf("- &darray+1: %p\n",darrayPlus);
+    printf("- &carray: %p\n",carray);
+    printf("- &carray+1: %p\n",carrayPlus);
     
 
 
