@@ -5,4 +5,8 @@ lab1/task1c
 lab1/output
 *.exe
 lab1/task1a
-
+.git-old/
+lab2/task1c
+lab2/task1d
+.gitignore
+lab2/addresses
