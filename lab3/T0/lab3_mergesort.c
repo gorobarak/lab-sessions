@@ -37,8 +37,7 @@ void merge(int *result, int *left, int *right, int leftLen, int rightLen)
     {
         result[i + j] = right[j];
     }
-    free(left);
-    free(right);
+
 }
 
 void mergeSort(int *arr, int len)
@@ -54,6 +53,8 @@ void mergeSort(int *arr, int len)
     mergeSort(right, len - (len / 2));
 
     merge(arr, left, right, len / 2, len - (len / 2));
+    free(left);
+    free(right);
 }
 
 int main(int argc, char **argv)
