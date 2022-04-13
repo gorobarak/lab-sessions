@@ -86,18 +86,18 @@ void list_print_out(link *virus_list)
 link* list_append(link* virus_list, link* to_add)
 {
     //append
-    // link* curr = virus_list;
-    // while (curr->nextVirus != NULL)
-    // {
-    //     curr = curr->nextVirus;
-    // }
+    link* curr = virus_list;
+    while (curr->nextVirus != NULL)
+    {
+        curr = curr->nextVirus;
+    }
 
-    // curr->nextVirus = to_add;
-    // return virus_list;
+    curr->nextVirus = to_add;
+    return virus_list;
 
     //prepend
-    to_add->nextVirus = virus_list;
-    return to_add;
+    // to_add->nextVirus = virus_list;
+    // return to_add;
 }
      
 /* Free the memory allocated by the list. */
@@ -149,12 +149,45 @@ void load_signatures(link* virus_list)
     fclose(input);
 }
 
+void detect_virus(char *buffer, unsigned int size, link *virus_list)
+{
+    link* t = virus_list;
+    while(t != NULL && t->vir != NULL)
+    {
+        for(size_t i = 0; i <= size; i++)
+        {
+            if (!memcmp(t->vir->sig, &buffer[i], t->vir->SigSize))
+            {
+                printf("The starting byte location in the suspected file: %d\nThe virus name: %s\nThe size of the virus signature: %d\n", i, t->vir->virusName, t->vir->SigSize);
+            }
+        }
+        t = t->nextVirus;
+    }
+}
+
+void detect_virus2(link* virus_list)
+{
+    char* file = (char*)malloc(1000);
+    virus* vir;
+    printf("enter input file to detect:\n");
+    fgets(file, 1000, stdin);
+    file[strlen(file) - 1] = '\0';
+    FILE* input = fopen(file, "r");
+    fseek(input, 0, SEEK_END);
+    int endOfFile = ftell(input);
+    rewind(input);
+    char buffer[10000];
+    fread(buffer, sizeof(char), endOfFile, file);
+    detect_virus(buffer, endOfFile < 10000 ? endOfFile : 10000, virus_list);
+}
+
 
 int main(int argc, char** argv)
 {
     loaded = 0;
     fun_desc functions[] =  {{"Load signatures", load_signatures},
                             {"Print signatures", list_print_out},
+                            {"Detect viruses", detect_virus2},
                             {"Quit", quit},
                             {NULL,NULL}};
 
@@ -163,7 +196,7 @@ int main(int argc, char** argv)
     while (1)
     {
         printf("Choose a function:\n");
-        for (size_t i = 0; i < 3; i++)
+        for (size_t i = 0; i < 4; i++)
         {
             printf("%d) %s\n", i + 1, functions[i].name);
         }
@@ -171,7 +204,7 @@ int main(int argc, char** argv)
         c -= '0';
         fgetc(stdin);//ignore '\n'
 
-        if (c > 0 && c < 4)
+        if (c > 0 && c < 5)
         {
             functions[c - 1].fun(vlist);
         }

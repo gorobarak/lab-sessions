@@ -25,27 +25,31 @@ void printHex(unsigned char* buffer, long length){
 }
 
 void readVirus(virus* vir, FILE* input){
-    unsigned short* SigSize = malloc(sizeof(short));
-    fread(SigSize, sizeof(short), 1, input);
+    
+    
+    unsigned short SigSize;
+    fread(&SigSize, sizeof(short), 1, input);
+    //printf("sigsize - %d\n", SigSize);
 
-    unsigned char* sig = (unsigned char*)malloc((SigSize[0] + SigSize[1]*256)* sizeof(char));
-    fread(sig, sizeof(char), (SigSize[0] + SigSize[1]*256), input);
+
+    unsigned char* sig = (unsigned char*)malloc(SigSize * sizeof(char));
+    fread(sig, sizeof(char), SigSize, input);
 
     char name[16];
     fread(name,sizeof(char), 16, input);
+    //printf("name is -%s\n", name);
     
-    vir->SigSize = (SigSize[0] + SigSize[1]*256);
+    vir->SigSize = SigSize;
+    //printf("sigsize-1 - %d\n", vir->SigSize);
+    
 
     vir->sig = sig; //ask ralbad
     //strcpy(vir->sig, sig);
 
     strcpy(vir->virusName, name);
 
-
-    free(SigSize);
+    //free(SigSize);
     //free(sig);
-    
-
 }
 
 void printVirus(virus* vir, FILE* output){
