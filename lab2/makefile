@@ -16,6 +16,8 @@ task2b: task2b.c
 task2c: task2c.c task2b.c
 	gcc -m32 -Wall -g -o task2c task2c.c task2b.c
 
+menu: menu_map.c task2b.c
+	gcc -m32 -Wall -g -o menu menu_map.c task2b.c
 
 clean:
 	rm -f *.o addresses
