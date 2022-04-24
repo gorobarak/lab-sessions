@@ -22,9 +22,9 @@ char* map(char *array, int array_length, char (*f) (char)){
  
 int main(int argc, char **argv){
   char (*f)(char);
-  f = &encrypt;
+  f = &cprt;
   char* mapped_array = map(argv[1], strlen(argv[1]), f);
   printf("mapped array - %s\n",mapped_array);
   free(mapped_array);
-  /* TODO: Test your code */
+  
 }
