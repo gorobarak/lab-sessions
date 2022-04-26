@@ -24,19 +24,27 @@ int main(){
         {NULL, NULL}
     };
     while(1){
+        int len = sizeof(menu) / sizeof(struct fun_desc);
+        
         printf("\nPlease choose a function:\n");
-        for (int i = 0; i < 7 ; i++){
+        
+        for (int i = 0; i < len -1 ; i++){
             printf("%d) %s\n", i, menu[i].name);
         }
+        
         printf("Option:");
+        
         char c  = fgetc(stdin);
         fgetc(stdin); // get rid of \n
+        c -= '0';
+        
 
-        if ( '0' <= c && c <= '6'){
+
+        if ( 0 <= c && c <= len -2){
             printf("Within bounds\n");
-            char* tmp = map(carrayPtr, base_len, menu[c - '0'].f );
+            char* tmp = map(carrayPtr, base_len, menu[c - 0].f );
             //free(carrayPtr);
-            if(c < '6'){
+            if(c < len - 2){
                 carrayPtr = tmp;
             } 
         }
