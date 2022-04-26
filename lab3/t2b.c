@@ -157,7 +157,6 @@ void detect_virus_menu(link* virus_list){
     char* filename = (char*)malloc(1000);
     printf("Please enter suspiscious filename\n");
     fgets(filename, 1000, stdin);
-    // sscanf(filename, "%s", filename);
     filename[strlen(filename) - 1] = '\0'; //removing \n
     FILE* input = fopen(filename, "r");
     fseek(input, 0, SEEK_END);
@@ -171,12 +170,47 @@ void detect_virus_menu(link* virus_list){
     fclose(input);
 }
 
+void kill_virus(char *fileName, int signatureOffset, int signatureSize)
+{
+    FILE* input = fopen(fileName, "r+");
+    fseek(input, signatureOffset, SEEK_SET);
+    char nop = 0x90;
+    for(int i = 0; i < signatureSize; i++)
+    {
+        fwrite(&nop,1,1,input);
+    }
+    fclose(input);
+}
+
+void fix_file(link* virus_list)
+{
+    printf("Please enter infected file name:\n");
+    char filename[100];
+    fgets(filename,100,stdin);
+    sscanf(filename,"%s",filename);
+
+    printf("Please enter starting byte location:\n");
+    char byteLocation[100];
+    fgets(byteLocation,100,stdin);
+    int signatureOffset;
+    sscanf(byteLocation,"%d",&signatureOffset);
+
+    printf("Please enter the virus sig size:\n");
+    char virusSize[100];
+    fgets(virusSize,100,stdin);
+    int signatureSize;
+    sscanf(virusSize,"%d",&signatureSize);
+
+    kill_virus(filename, signatureOffset, signatureSize);
+}
+
 int main(int argc, char** argv)
 {
     loaded = 0;
     fun_desc functions[] =  {{"Load signatures", &load_signatures},
                             {"Print signatures", &list_print_out},
                             {"Detect viruses", &detect_virus_menu},
+                            {"Fix file", &fix_file},
                             {"Quit", &quit},
                             {NULL,NULL}};
 
@@ -185,7 +219,7 @@ int main(int argc, char** argv)
     while (1)
     {
         printf("Choose a function:\n");
-        for (size_t i = 0; i < 4; i++)
+        for (size_t i = 0; i < 5; i++)
         {
             printf("%d) %s\n", i + 1, functions[i].name);
         }
@@ -193,7 +227,7 @@ int main(int argc, char** argv)
         c -= '0';
         fgetc(stdin);//ignore '\n'
 
-        if (c > 0 && c < 5)
+        if (c > 0 && c < 6)
         {
             functions[c - 1].fun(vlist);
         }
