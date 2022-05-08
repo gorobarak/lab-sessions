@@ -25,10 +25,11 @@ int main (int argc, char* argv[]){
     char* input_file;
     char* output_file;
     int input_desc = STDIN;
-    int optput_desc = STDOUT;
+    int output_desc = STDOUT;
     int i;
 
     for (i = 1; i < argc; i++){
+       
         if(strcmp(argv[i],"-D") == 0)
         {
             debug = 1;
@@ -51,16 +52,27 @@ int main (int argc, char* argv[]){
         {
             output_file = argv[i] + 2;
 
-            optput_desc = system_call(SYS_OPEN, output_file, O_RDWR | O_CREAT | O_EXCL, 0777);/*/one more arg? permissions?
+            
+
+            output_desc = system_call(SYS_OPEN, output_file, O_RDWR | O_CREAT | O_EXCL, 0777);/*/one more arg? permissions?
             // if() //try to open
             // {
             //     system_call(SYS_WRITE, STDOUT, "File does not exist or not accessible.");
             //      //add exit
             // }*/
-            system_call(SYS_LSEEK, optput_desc, 0, SEEK_SET);
+            system_call(SYS_LSEEK, output_desc, 0, SEEK_SET);
 
         }
     }
+
+    system_call(SYS_WRITE, STDERR,"output file - ", 19);
+    system_call(SYS_WRITE, STDERR,itoa(output_desc), strlen(itoa(output_desc)));
+    system_call(SYS_WRITE, STDERR, "\n", 1);
+
+    system_call(SYS_WRITE, STDERR,"input file - ", 18);
+    system_call(SYS_WRITE, STDERR,itoa(input_desc), strlen(itoa(input_desc)));
+    system_call(SYS_WRITE, STDERR, "\n", 1);
+
 
     int count = 0;
     char c;
@@ -92,9 +104,9 @@ int main (int argc, char* argv[]){
         
         if (c == '\n'){
             char* str = itoa(count);
-            system_call(SYS_WRITE, optput_desc, "Count is:",9);
-            int num_of_bytes_written = system_call(SYS_WRITE, optput_desc, str, strlen(str));
-            system_call(SYS_WRITE, optput_desc, "\n", 1);
+            system_call(SYS_WRITE, output_desc, "Count is:",9);
+            int num_of_bytes_written = system_call(SYS_WRITE, output_desc, str, strlen(str));
+            system_call(SYS_WRITE, output_desc, "\n", 1);
             count = 0;
             IN = 0;
             if (debug){
@@ -120,6 +132,6 @@ int main (int argc, char* argv[]){
         }
         
     }
-    system_call(SYS_WRITE, optput_desc, "\n", 1);
+    system_call(SYS_WRITE, output_desc, "\n", 1);
     return 0;
 }
