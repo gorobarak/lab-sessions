@@ -1,6 +1,7 @@
  #include "util.h"
 
-
+#define O_RDONLY 00
+#define O_WRONLY 01
 #define O_RDWR 02
 #define SEEK_SET 00
 
