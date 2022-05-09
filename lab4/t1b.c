@@ -22,8 +22,8 @@
 
 int main (int argc, char* argv[]){
     int debug = 0;
-    char* input_file;
-    char* output_file;
+    char* input_file = "stdin";
+    char* output_file = "stdout";
     int input_desc = STDIN;
     int output_desc = STDOUT;
     int i;
@@ -64,16 +64,18 @@ int main (int argc, char* argv[]){
 
         }
     }
+    if (debug)
+    {
+        system_call(SYS_WRITE, STDERR,"Input file - ", 13);
+        system_call(SYS_WRITE, STDERR, input_file, strlen(input_file));
+        system_call(SYS_WRITE, STDERR, "\n", 1);
+        system_call(SYS_WRITE, STDERR,"Output file - ", 14);
+        system_call(SYS_WRITE, STDERR, output_file, strlen(output_file));
+        system_call(SYS_WRITE, STDERR, "\n", 1);
+    }
+    
 
-    system_call(SYS_WRITE, STDERR,"output file - ", 19);
-    system_call(SYS_WRITE, STDERR,itoa(output_desc), strlen(itoa(output_desc)));
-    system_call(SYS_WRITE, STDERR, "\n", 1);
-
-    system_call(SYS_WRITE, STDERR,"input file - ", 18);
-    system_call(SYS_WRITE, STDERR,itoa(input_desc), strlen(itoa(input_desc)));
-    system_call(SYS_WRITE, STDERR, "\n", 1);
-
-
+    
     int count = 0;
     char c;
     int IN = 0;
