@@ -21,12 +21,12 @@
 #define SYS_GETDENTS 141
 
 
-typedef struct entry{
+typedef struct ent{
   int inode;
   int offset;
   short len; 
-  char buff[1];
-}entry;
+  char buf[1];
+}ent;
 
 int main (int argc, char* argv[])
 {
@@ -46,7 +46,7 @@ int main (int argc, char* argv[])
         {
             debug = 1;
         }
-        else if (strncmp(argv[i], "-i", 2) == 0)
+        else if (strncmp(argv[i], "-p", 2) == 0)
         {
             prefix = argv[i] + 2;
             prefixMode = 1;
@@ -57,20 +57,23 @@ int main (int argc, char* argv[])
     system_call(SYS_WRITE, STDOUT, "something...\n", 13);
 
     i = 0;
-    entry* e;
+    ent* e;
     while (i < dirSize)
     {
-        e = (entry*)(dirData + i);
-        system_call(SYS_WRITE, STDOUT, e->buff, strlen(e->buff));
-        system_call(SYS_WRITE, STDOUT, "\n", 1);
-        
-        if (debug)
+        e = (ent*)(dirData + i);
+
+        if ((prefixMode && (strncmp(e->buf, prefix, strlen(prefix)) == 0)) || (!prefixMode))
         {
-            system_call(SYS_WRITE, STDERR, "file length - ", 14);
-            system_call(SYS_WRITE, STDERR, itoa((int)e->len), sizeof(short));
-            system_call(SYS_WRITE, STDERR, "\n\n", 2);
+            system_call(SYS_WRITE, STDOUT, e->buf, strlen(e->buf));
+            system_call(SYS_WRITE, STDOUT, "\n", 1);
+            
+            if (debug)
+            {
+                system_call(SYS_WRITE, STDERR, "file length - ", 14);
+                system_call(SYS_WRITE, STDERR, itoa((int)e->len), sizeof(short));
+                system_call(SYS_WRITE, STDERR, "\n\n", 2);
+            }
         }
-        
         i += e->len;
     }
 
