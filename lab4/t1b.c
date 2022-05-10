@@ -37,7 +37,7 @@ int main (int argc, char* argv[]){
         else if (strncmp(argv[i], "-i", 2) == 0)
         {
             input_file = argv[i] + 2;
-            input_desc = system_call(SYS_OPEN, input_file, O_RDWR, 0777);/*/one more arg? permissions?
+            input_desc = system_call(SYS_OPEN, input_file, O_RDWR, 0777);/*/one more arg? permissions? Need somthing if file dont exist?
             // if() //try to open
             // {
             //     system_call(SYS_WRITE, STDOUT, "File does not exist or not accessible.");
@@ -45,7 +45,7 @@ int main (int argc, char* argv[]){
                 }
             /*/ 
 
-            system_call(SYS_LSEEK, input_desc, 0, SEEK_SET);
+            system_call(SYS_LSEEK, input_desc, 0, SEEK_SET); /*why is this needed?*/
 
         }
         else if (strncmp(argv[i], "-o", 2) == 0)
@@ -60,7 +60,7 @@ int main (int argc, char* argv[]){
             //     system_call(SYS_WRITE, STDOUT, "File does not exist or not accessible.");
             //      //add exit
             // }*/
-            system_call(SYS_LSEEK, output_desc, 0, SEEK_SET);
+            system_call(SYS_LSEEK, output_desc, 0, SEEK_SET); /*why not add to the end?*/
 
         }
     }
