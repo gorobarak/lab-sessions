@@ -66,6 +66,6 @@ int main (int argc, char* argv[])
         
         i += e->len;
     }
-
+    system_call(SYS_CLOSE, currDir);
     return 0;
 }
