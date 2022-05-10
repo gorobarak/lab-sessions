@@ -22,12 +22,12 @@
 #define SYS_GETDENTS 141
 
 
-typedef struct entry{
+typedef struct ent{
   int inode;
   int offset;
   short len; 
-  char buff[1];
-}entry;
+  char buf[1];
+}ent;
 
 int main (int argc, char* argv[])
 {
@@ -50,11 +50,11 @@ int main (int argc, char* argv[])
     }
 
     i = 0;
-    entry* e;
+    ent* e;
     while (i < dirSize)
     {
-        e = (entry*)(dirData + i);
-        system_call(SYS_WRITE, STDOUT, e->buff, strlen(e->buff));
+        e = (ent*)(dirData + i);
+        system_call(SYS_WRITE, STDOUT, e->buf, strlen(e->buf));
         system_call(SYS_WRITE, STDOUT, "\n", 1);
         
         if (debug)
