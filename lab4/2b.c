@@ -28,6 +28,8 @@ typedef struct ent{
   char buf[1];
 }ent;
 
+/*where is printing the type of the file*/
+
 int main (int argc, char* argv[])
 {
     int debug = 0;
@@ -76,6 +78,7 @@ int main (int argc, char* argv[])
         }
         i += e->len;
     }
+    system_call(SYS_CLOSE,dirFD); /*added close directory*/
 
     return 0;
 }
