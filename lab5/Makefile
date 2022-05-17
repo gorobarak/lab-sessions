@@ -10,6 +10,8 @@
 1: 1.c LineParser.c
 	gcc -g -Wall -m32 -o 1 1.c LineParser.c
 
+2c: 2c.c LineParser.c
+	gcc -g -Wall -m32 -o 2c 2c.c LineParser.c
 
 LineParser: LineParser.c
 	gcc -g -Wall -m32 -o LineParser LineParser.c
@@ -18,4 +20,4 @@ looper: looper.c
 	gcc -g -Wall -m32 -o looper looper.c
 
 clean:
-	rm -f *.o LineParser looper 0a 0c 0d 1
+	rm -f *.o LineParser looper 0a 0c 0d 1 2c

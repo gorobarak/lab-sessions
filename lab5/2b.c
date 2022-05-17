@@ -52,9 +52,65 @@ void print_process(process* p){
 
 void printProcessList(process** process_list)
 {
+    updateProcessList(process_list);
+    process* prev = NULL;
     process* curr = *(process_list);
     while (curr != NULL){
         print_process(curr);
+        if(curr->status == TERMINATED)
+        {
+            prev->next = curr->next;
+        }
+        else{
+            prev = curr; 
+        }
+        
         curr = curr->next;
+        
+    }
+}
+
+void freeProcessList(process** process_list)
+{
+    process* curr = *(process_list);
+    while (curr != NULL)
+    {
+        process* tmp = curr;
+        curr = curr->next;
+        freeCmdLines(tmp->cmd);
+        free(tmp);
+        
+    }
+    
+}
+
+void updateProcessList(process **process_list)
+{
+    int status;
+    process* curr = *(process_list);
+    while(curr != NULL)
+    {
+        waitpid(curr->pid, &status, WUNTRACED);
+         if (WIFEXITED(status))
+         {
+             curr->status = TERMINATED;
+         }
+         else if (WIFSTOPPED(status))
+         {
+             curr->status = SUSPENDED;
+         }
+    }
+}
+
+void updateProcessStatus(process** process_list, int pid, int status)
+{
+    process* curr = *(process_list);
+    while(curr != NULL && curr->pid != pid)
+    {
+        curr = curr->next;
+    }
+    if (curr != NULL)
+    {
+        curr->status = status;
     }
 }
