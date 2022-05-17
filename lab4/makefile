@@ -9,6 +9,9 @@ t1b: start.o t1b.o util.o
 
 2b: start.o 2b.o util.o
 	ld -m elf_i386 start.o 2b.o util.o -o 2b
+	
+2c: start.o 2c.o util.o
+	ld -m elf_i386 start.o 2c.o util.o -o 2c
 
 start.o: start.s
 	nasm -f elf32 start.s -o start.o
@@ -28,5 +31,8 @@ t1b.o: t1b.c
 2b.o: 2b.c
 	gcc -m32 -Wall -ansi -c -nostdlib -fno-stack-protector 2b.c -o 2b.o
 
+2c.o: 2c.c
+	gcc -m32 -Wall -ansi -c -nostdlib -fno-stack-protector 2c.c -o 2c.o
+
 clean:
-	rm -f *.o t1a t1b o1 2a 2b
+	rm -f *.o t1a t1b o1 2a 2b 2c

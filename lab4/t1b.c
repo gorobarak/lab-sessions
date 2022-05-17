@@ -37,31 +37,15 @@ int main (int argc, char* argv[]){
         else if (strncmp(argv[i], "-i", 2) == 0)
         {
             input_file = argv[i] + 2;
-            input_desc = system_call(SYS_OPEN, input_file, O_RDWR, 0777);/*/one more arg? permissions? Need somthing if file dont exist?
-            // if() //try to open
-            // {
-            //     system_call(SYS_WRITE, STDOUT, "File does not exist or not accessible.");
-            //      //add exit
-                }
-            /*/ 
-
-            system_call(SYS_LSEEK, input_desc, 0, SEEK_SET); /*why is this needed?*/
+            input_desc = system_call(SYS_OPEN, input_file, O_RDWR, 0777);
+            system_call(SYS_LSEEK, input_desc, 0, SEEK_SET); 
 
         }
         else if (strncmp(argv[i], "-o", 2) == 0)
         {
             output_file = argv[i] + 2;
-
-            
-
-            output_desc = system_call(SYS_OPEN, output_file, O_RDWR | O_CREAT | O_EXCL, 0777);/*/one more arg? permissions?
-            // if() //try to open
-            // {
-            //     system_call(SYS_WRITE, STDOUT, "File does not exist or not accessible.");
-            //      //add exit
-            // }*/
-            system_call(SYS_LSEEK, output_desc, 0, SEEK_SET); /*why not add to the end?*/
-
+            output_desc = system_call(SYS_OPEN, output_file, O_RDWR | O_CREAT | O_EXCL, 0777);
+            system_call(SYS_LSEEK, output_desc, 0, SEEK_SET); 
         }
     }
     if (debug)
