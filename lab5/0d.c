@@ -61,6 +61,20 @@ int main(int argc, char* argv[])
             
             exit(0);
         }
+        else if (strncmp("cd ", user_input, 3) == 0)
+        {
+            char* path = user_input + 3;
+            path[strlen(path) -1]  = '\0';
+
+            int ret = chdir(path);
+            if (ret == -1)
+            {
+                perror("change dir failed");
+                exit(1);
+            }
+            continue;
+        }
+        
         
         cmdLine = parseCmdLines(user_input);
         execute(cmdLine);

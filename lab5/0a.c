@@ -10,7 +10,7 @@
 
 void execute(cmdLine* pCmdLine)
 {
-    int ret_code = execv(pCmdLine->arguments[0], pCmdLine->arguments);
+    int ret_code = execvp(pCmdLine->arguments[0], pCmdLine->arguments);
     if (ret_code == -1)
     {
         perror("execv faield");
@@ -32,11 +32,12 @@ int main(int argc, char* argv[])
         fgets(user_input, MAX_SIZE, stdin);
         if (strcmp(user_input, "quit\n") == 0)
         {
-            freeCmdLines(cmdLine);
             exit(0);
         }
         cmdLine = parseCmdLines(user_input);
         execute(cmdLine);
+        freeCmdLines(cmdLine);
+
     }
     return 0;
 }

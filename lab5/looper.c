@@ -3,22 +3,31 @@
 #include <signal.h>
 #include <string.h>
 
-void handler(int sig)
-{
-	printf("sig: %s", strsignal(sig));
-	if (SIGTSTP)
+void handler(int signum) {
+	char* signame = strsignal(signum);
+	
+	if (signum == SIGTSTP)
 	{
 		signal(SIGCONT, handler);
 	}
-	else if (SIGCONT)
+	else if (signum == SIGCONT)
 	{
 		signal(SIGTSTP, handler);
+	
 	}
-	signal(sig, SIG_DFL);
-	raise(sig);
+	
+	printf("received signal: %s\n", signame);
+	signal(signum, SIG_DFL);
+	raise(signum);
+
 }
 
+
+
 int main(int argc, char **argv){ 
+	signal(SIGINT , handler);
+	signal(SIGCONT , handler);
+	signal(SIGTSTP , handler);
 
 	printf("Starting the program\n");
 
