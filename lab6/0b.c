@@ -9,16 +9,6 @@
 
 int debug = 0;
 
-
-// void print_debug(char* str)
-// {
-//     if (debug)
-//     {
-//         fprintf(stderr, "%s", str);
-//     }
-// }
-
-
 int main(int argc, char* argv[])
 {
     
@@ -65,6 +55,7 @@ int main(int argc, char* argv[])
             fprintf(stderr, "(parent_process>created process with id: %d)\n", pid1);
             fprintf(stderr, "(parent_process>closing the write end of the pipe...)\n");
         }
+        
         close(pipe_ends[1]);//STEP 4
         int pid2 = fork();
         

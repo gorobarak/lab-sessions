@@ -10,5 +10,8 @@
 LineParser: LineParser.c
 	gcc -g -Wall -m32 -o LineParser LineParser.c
 
+2: 2.c LineParser.c
+	gcc -g -Wall -m32 -o 2 2.c LineParser.c
+
 clean:
-	rm -f *.o  0a 0b 0d 1 2c
+	rm -f *.o  0a 0b 0d 1 2
