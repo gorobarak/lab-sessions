@@ -53,8 +53,20 @@ int sizeOfList(cmdLine* head)
     return count;
 }
 
+void executeProc(cmdLine* pCmdLine)
+{
+    int ret_code = execvp(pCmdLine->arguments[0], pCmdLine->arguments);
+    if (ret_code == -1)
+    {
+        perror("execv faield");
+        exit(1);
+    }
+}
+
 void execute(cmdLine* pCmdLine)
 {
+    
+    /* non executable commands */
     if (strcmp(pCmdLine->arguments[0], "quit") == 0)
     {
         exit(0);
@@ -71,14 +83,17 @@ void execute(cmdLine* pCmdLine)
     }
 
 
-    int pipe_ends[2] = {-1, -1};
+   
     int next = (pCmdLine->next) ? 1 : 0;
-    if (next)
+    int** pipes;
+    int n = sizeOfList(pCmdLine);
+    if(next)
     {
-        pipe(pipe_ends);
+        pipes = createPipes(n - 1); 
     }
 
     pid_t pid = fork();
+
 
     if (pid == -1){
         perror("fork faield");
@@ -86,6 +101,7 @@ void execute(cmdLine* pCmdLine)
     }
     else if (pid == 0)
     {
+        /*Handle redircet*/
         if (pCmdLine->inputRedirect)
         {
             close(STDIN);
@@ -96,50 +112,80 @@ void execute(cmdLine* pCmdLine)
             close(STDOUT);
             open(pCmdLine->outputRedirect, O_WRONLY | O_CREAT);
         }
-
-        if (next)
+        if(next)
         {
             close(STDOUT);
-            dup(pipe_ends[1]);
-            close(pipe_ends[1]);
+            dup(pipes[0][1]);
+            close(pipes[0][1]);
+            executeProc(pCmdLine);
         }
-
-        int ret_code = execvp(pCmdLine->arguments[0], pCmdLine->arguments);
-        if (ret_code == -1)
+        else
         {
-            perror("execv faield");
-            exit(1);
-        }   
+            executeProc(pCmdLine);
+        }
     }
     else{ //parent
-        if (pCmdLine->blocking == 1){
+        if (pCmdLine->blocking == 1)
+        {
             waitpid(pid, NULL, 0);
         }
-        if (next)
-        {
-            close(pipe_ends[1]);
-            int pid2 = fork();
 
-            if (pid2 == 0)
+        pid_t running_pid;
+        int currpipe = 0;
+
+        while(pCmdLine->next && pCmdLine->next->next)
+        {
+            close(pipes[currpipe][1]);
+            running_pid = fork();
+            pCmdLine = pCmdLine->next;
+            if(!running_pid) //child
             {
                 close(STDIN);
-                dup(pipe_ends[0]);
-                close(pipe_ends[0]);
+                dup(pipes[currpipe][0]);
+                close(pipes[currpipe][0]);
+                
+                close(STDOUT);
+                dup(pipes[currpipe + 1][1]);
+                close(pipes[currpipe + 1][1]);
 
-                int ret_code = execvp(pCmdLine->next->arguments[0], pCmdLine->next->arguments);
-                if (ret_code == -1)
+                executeProc(pCmdLine);
+
+            }
+            else//parent
+            {   
+                if (pCmdLine->blocking == 1)
                 {
-                    perror("execv faield");
-                    exit(1);
-                }   
+                   waitpid(running_pid, NULL, 0);
+                }
+                close(pipes[currpipe][0]);
+                currpipe++;
+
+
+            }
+        }
+        if(next)//handle last cmd in cmd list
+        {
+            pid_t pid1 = fork();
+            pCmdLine = pCmdLine -> next;
+            close(pipes[currpipe][1]);
+            if (!pid1)
+            {
+                close(STDIN);
+                dup(pipes[currpipe][0]);
+                close(pipes[currpipe][0]);
+                executeProc(pCmdLine);
             }
             else
             {
-                close(pipe_ends[0]);
-                waitpid(pid, NULL, 0);
-                waitpid(pid2, NULL, 0);
+                if (pCmdLine->blocking == 1)
+                {
+                   waitpid(running_pid, NULL, 0);
+                }
+                close(pipes[currpipe][0]);
             }
+            
         }
+        
     } 
 }
 
