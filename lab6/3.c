@@ -14,6 +14,7 @@
 #define STDOUT 1
 
 int debug = 0;
+char* last_cmd;
 
 int ** createPipes(int nPipes){
     int** pipes;
@@ -42,6 +43,12 @@ int *rightPipe(int **pipes, cmdLine *pCmdLine){
     return pipes[pCmdLine->idx];
 }
 
+static char *strClone(const char *source)
+{
+    char* clone = (char*)malloc(strlen(source) + 1);
+    strcpy(clone, source);
+    return clone;
+}
 int sizeOfList(cmdLine* head)
 {
     int count  = 0;
@@ -81,6 +88,19 @@ void execute(cmdLine* pCmdLine)
         }
         return;
     }
+    else if (strcmp(pCmdLine->arguments[0], "prtpipe") == 0)
+    {
+        if (!last_cmd)
+        {
+            printf("No last cmd\n");
+        }
+        else 
+        {
+            printf("Last cmd - %s\n", last_cmd);
+        }
+        return;
+    }
+    
 
 
    
@@ -90,6 +110,9 @@ void execute(cmdLine* pCmdLine)
     if(next)
     {
         pipes = createPipes(n - 1); 
+        free(last_cmd);
+        last_cmd = strClone(pCmdLine->arguments[0]);
+        //printf("updating last cmd - %s\n", last_cmd);
     }
 
     pid_t pid = fork();
@@ -236,6 +259,7 @@ int main(int argc, char* argv[])
         execute(cmdLine);
         freeCmdLines(cmdLine);
     }
+    free(last_cmd);
     return 0;
 }
 

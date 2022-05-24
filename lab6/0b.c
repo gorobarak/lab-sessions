@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
         }
 
         close(STDOUT); 
-        dup(pipe_ends[1]);
+        dup(pipe_ends[1]); 
         close(pipe_ends[1]);
 
         if (debug)
