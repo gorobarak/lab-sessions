@@ -76,6 +76,7 @@ void execute(cmdLine* pCmdLine)
     /* non executable commands */
     if (strcmp(pCmdLine->arguments[0], "quit") == 0)
     {
+        freeCmdLines(pCmdLine);
         exit(0);
     }
     else if (strcmp(pCmdLine->arguments[0], "cd") == 0)
@@ -112,7 +113,6 @@ void execute(cmdLine* pCmdLine)
         pipes = createPipes(n - 1); 
         free(last_cmd);
         last_cmd = strClone(pCmdLine->arguments[0]);
-        //printf("updating last cmd - %s\n", last_cmd);
     }
 
     pid_t pid = fork();
@@ -193,8 +193,6 @@ void execute(cmdLine* pCmdLine)
                 }
                 close(pipes[currpipe][0]);
                 currpipe++;
-
-
             }
         }
         if(next)//handle last cmd in cmd list
@@ -229,9 +227,7 @@ void execute(cmdLine* pCmdLine)
                 close(pipes[currpipe][0]);
                 releasePipes(pipes, n-1);
             }
-            
         }
-        
     } 
 }
 
@@ -262,4 +258,3 @@ int main(int argc, char* argv[])
     free(last_cmd);
     return 0;
 }
-
