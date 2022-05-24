@@ -140,6 +140,17 @@ void execute(cmdLine* pCmdLine)
             pCmdLine = pCmdLine->next;
             if(!running_pid) //child
             {
+                if (pCmdLine->inputRedirect)
+                {
+                    close(STDIN);
+                    open(pCmdLine->inputRedirect, O_RDONLY);
+                }
+                if (pCmdLine->outputRedirect)
+                {
+                    close(STDOUT);
+                    open(pCmdLine->outputRedirect, O_WRONLY | O_CREAT);
+                }
+                
                 close(STDIN);
                 dup(pipes[currpipe][0]);
                 close(pipes[currpipe][0]);
@@ -170,6 +181,17 @@ void execute(cmdLine* pCmdLine)
             close(pipes[currpipe][1]);
             if (!pid1)
             {
+                if (pCmdLine->inputRedirect)
+                {
+                    close(STDIN);
+                    open(pCmdLine->inputRedirect, O_RDONLY);
+                }
+                if (pCmdLine->outputRedirect)
+                {
+                    close(STDOUT);
+                    open(pCmdLine->outputRedirect, O_WRONLY | O_CREAT);
+                }
+                
                 close(STDIN);
                 dup(pipes[currpipe][0]);
                 close(pipes[currpipe][0]);
@@ -179,9 +201,10 @@ void execute(cmdLine* pCmdLine)
             {
                 if (pCmdLine->blocking == 1)
                 {
-                   waitpid(running_pid, NULL, 0);
+                   waitpid(pid1, NULL, 0);
                 }
                 close(pipes[currpipe][0]);
+                releasePipes(pipes, n-1);
             }
             
         }
