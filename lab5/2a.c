@@ -40,9 +40,18 @@ process* create_process(cmdLine* cmd, pid_t pid, int status, process* next){
 
 void addProcess(process** process_list, cmdLine* cmd, pid_t pid)
 {
-    process* head = *(process_list);
-    process* new_process = create_process(cmd, pid, RUNNING, head);
-    *(process_list) = new_process;
+    process* new_process;
+    if (process_list)
+    {
+        process* head = *(process_list);
+        new_process = create_process(cmd, pid, RUNNING, head);
+    }
+    else
+    {
+        new_process = create_process(cmd, pid, RUNNING, NULL);
+    }
+    //process_list = &new_process;
+    *process_list =  new_process;
 }
 
 //<process id> <the command> <process status>

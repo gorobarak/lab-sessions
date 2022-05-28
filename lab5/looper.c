@@ -16,7 +16,7 @@ void handler(int signum) {
 	
 	}
 	
-	printf("received signal: %s\n", signame);
+	printf("\nreceived signal: %s\n", signame);
 	signal(signum, SIG_DFL);
 	raise(signum);
 
