@@ -62,7 +62,7 @@ void print_process(process* p){
     char* statusStr;
     if(p)
     {
-       statusStr = switchStatus(p->status);
+        statusStr = switchStatus(p->status);
         printf("%d %s %s\n", p->pid, p->cmd->arguments[0], statusStr);
     }
     else
@@ -74,26 +74,37 @@ void print_process(process* p){
 void updateProcessList(process **process_list)
 {
     int status;
+    int ret;
     process* curr = *process_list;
     while(curr != NULL)
     {
-        printf("Entered while in update\n");
-        waitpid(curr->pid, &status, WUNTRACED | WCONTINUED);
-         if (WIFEXITED(status) | WIFSIGNALED(status))
-         {
-             curr->status = TERMINATED;
-         }
-         else if (WIFSTOPPED(status))
-         {
-             curr->status = SUSPENDED;
-         }
-         else if (WIFCONTINUED(status))
-         {
-             curr->status = RUNNING;
-         }
-         curr = curr->next;
+        ret = waitpid(curr->pid, &status, WUNTRACED | WCONTINUED | WNOHANG);
+        if (ret != 0){
+            if  (WIFSTOPPED(status))
+            {
+                curr->status = SUSPENDED;
+            }
+            else if (WIFCONTINUED(status))
+            {
+                curr->status = RUNNING;
+            }
+            else
+            {
+                curr->status = TERMINATED;
+            }
+        }
+        curr = curr->next;
     }
-    printf("Exited update\n");
+
+    return;
+}
+
+void delete_process(process* p){
+    if(p)
+    {
+        freeCmdLines(p->cmd);
+        free(p);
+    }
     return;
 }
 
@@ -102,11 +113,13 @@ void printProcessList(process** process_list)
     updateProcessList(process_list);
     process* prev = NULL;
     process* curr = *process_list;
+    process* next;
     printf("PID  CMD  STATUS\n");
     while (curr != NULL){
         print_process(curr);
         if(curr->status == TERMINATED) //delete from list
         {
+             
             if(curr == *process_list)//head
             {
                *process_list = curr->next; 
@@ -115,14 +128,16 @@ void printProcessList(process** process_list)
             {
                 prev->next = curr->next;
             }
+            next = curr->next;
+            delete_process(curr);
             
-            //free here
         }
         else{
-            prev = curr; 
+            prev = curr;
+            next = curr->next; 
         }
         
-        curr = curr->next;
+        curr = next;
         
     }
 }
@@ -130,16 +145,12 @@ void printProcessList(process** process_list)
 //prepend
 void addProcess(process** process_list, cmdLine* cmd, pid_t pid)
 {
-    printf("entred ADD\n");
-    printf("head before ADD-\n");
-    print_process(*process_list);
+   
 
     process* new_process;
     new_process = create_process(cmd, pid, RUNNING, *process_list);
     *process_list =  new_process;
     
-    printf("head after ADD-\n");
-    print_process(*process_list);
 
 
 }
@@ -177,7 +188,7 @@ void execute(cmdLine* pCmdLine)
     /*Handle shell commands*/
     if (strcmp(pCmdLine->arguments[0], "quit") == 0)
     {
-        freeCmdLines(pCmdLine);
+        freeProcessList(&plist);
         exit(0);
     }
     else if (strcmp(pCmdLine->arguments[0], "cd") == 0)
@@ -193,6 +204,26 @@ void execute(cmdLine* pCmdLine)
     else if (strcmp(pCmdLine->arguments[0], "showprocs") == 0)
     {
         printProcessList(&plist);
+        return;
+    }
+    else if (strcmp(pCmdLine->arguments[0], "nap") == 0)
+    {
+        pid_t pid1 = fork();
+        if(pid1 == 0)
+        {
+            pid_t dest_pid = atoi(pCmdLine->arguments[2]);
+            kill(dest_pid, SIGTSTP);
+            sleep(atoi(pCmdLine->arguments[1]));
+            kill(dest_pid, SIGCONT);
+            exit(0);
+        }
+        
+        return;
+    }
+    else if (strcmp(pCmdLine->arguments[0], "stop") == 0)
+    {
+        pid_t dest_pid = atoi(pCmdLine->arguments[1]);
+        kill(dest_pid, SIGINT);
         return;
     }
     
@@ -246,7 +277,7 @@ int main(int argc, char* argv[])
         
         cmdLine = parseCmdLines(user_input);
         execute(cmdLine);
-        freeCmdLines(cmdLine);
+        
     }
     return 0;
 }
