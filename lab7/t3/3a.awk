@@ -4,7 +4,7 @@
 
 #3b
 # BEGIN {FS=","; counter=0}
-# /fun/ || /fan/{counter++}
+# /f[au]n/ {counter++}
 # END {print "The number of poem that have fun or fan is : ",counter}
 
 #3c
