@@ -1,7 +1,7 @@
 #3a
 # BEGIN {FS=","}
 # /spring/ {print $2,"---",$3,"---",$4} 
-
+check
 #3b
 # BEGIN {FS=","; counter=0}
 # /fun/ || /fan/{counter++}
