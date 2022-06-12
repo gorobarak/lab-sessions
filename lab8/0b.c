@@ -1,6 +1,10 @@
 #include <stdlib.h>
 #include <stdio.h>
-int debug = 0; 
+#include <elf.h>
+int debug = 0;
+int currentfd;
+void* map_start; 
+
 
 struct fun_desc
 {
@@ -10,6 +14,7 @@ struct fun_desc
 
 
 void quit(){
+    //free stuff
     exit(0);
 }
 void toggle_debug()
@@ -26,6 +31,19 @@ void toggle_debug()
     }
     return;
 }
+void examine_elf()
+{   
+    char filename[1000];
+    printf("Please enter ELF file name: ");
+    fgets(filename,1000, stdin);
+    sscanf(filename, "%s", filename);
+    
+
+
+
+
+}
+
 void f(){
     printf("Not implemented yet");
     exit(0);    
@@ -34,7 +52,7 @@ void f(){
 int main(){
     struct fun_desc menu[] = {
         {"Toggle Debug", &toggle_debug},
-        {"Examine ELF", &f},
+        {"Examine ELF", &examine_elf},
         {"Print Section", &f},
         {"Print Symbols", &f},
         {"Quit", &quit}
