@@ -10,8 +10,9 @@
 
 int debug = 0;
 int currentfd = -1;
-char* map_start;
+void* map_start;
 off_t size; 
+Elf32_Ehdr* header;
 
 
 struct fun_desc
@@ -57,7 +58,8 @@ void examine_elf()
     if (currentfd == -1)  perror("open file failed");
 
     size = lseek(currentfd, 0, SEEK_END);
-    Elf32_Ehdr *header = mmap(0, size, PROT_READ, MAP_SHARED, currentfd, 0);
+    map_start = mmap(0, size, PROT_READ, MAP_SHARED, currentfd, 0);
+    header = (Elf32_Ehdr*) map_start;
 
     if (!(header->e_ident[0] == 0x7f && header->e_ident[1] == 'E' && header->e_ident[2] == 'L' && header->e_ident[3] == 'F'))
     {
@@ -104,11 +106,38 @@ void f(){
     exit(0);    
 }
 
+void print_section_names()
+{
+    if (currentfd == -1)
+    {
+        printf("No ELF File loaded\n");
+        exit(1);
+    }
+
+
+    Elf32_Shdr* section_header = (Elf32_Shdr *)(map_start + header->e_shoff);
+    int num_of_sections = header->e_shnum;
+    Elf32_Shdr *sh_strtab = &section_header[header->e_shstrndx];
+    const char *const sh_strtab_p = map_start + sh_strtab->sh_offset;
+
+    printf("[Nr] Name                 Addr     Off      Size     Type\n");
+    for (int i = 0; i < num_of_sections; ++i)
+    {
+        const char *section_name = sh_strtab_p + section_header[i].sh_name;
+        Elf32_Addr addr = section_header[i].sh_addr;
+        Elf32_Off offset = section_header[i].sh_offset;
+        Elf32_Word size = section_header[i].sh_size;
+        Elf32_Word type = section_header[i].sh_type;
+
+        printf("[%-2d] %-20s %08x %08x %08x %-u\n", i, section_name, addr, offset, size, type);
+    }
+}
+
 int main(){
     struct fun_desc menu[] = {
         {"Toggle Debug", &toggle_debug},
         {"Examine ELF", &examine_elf},
-        {"Print Section", &f},
+        {"Print Section Names", &print_section_names},
         {"Print Symbols", &f},
         {"Quit", &quit}
     };
