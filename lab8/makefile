@@ -6,4 +6,4 @@
 	gcc -g -Wall -m32 -o 2 2.c
 
 clean:
-	rm -f *.o 0b
+	rm -f *.o 0b 1 2

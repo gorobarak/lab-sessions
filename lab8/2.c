@@ -135,7 +135,32 @@ void print_section_names()
 
 void print_symbols()
 {
-
+    Elf32_Shdr *section_header = (Elf32_Shdr *)(map_start + header->e_shoff); //section header table
+    int num_of_sections = header->e_shnum; 
+    char *section_names = (char *)(map_start + section_header[header->e_shstrndx].sh_offset); //start of section header string table (offset is absoulte offset)
+    int index = 0;
+    printf("Num:    value      section_index section_name symbol_name\n");
+    for (int i = 0; i < num_of_sections; i++)
+    {
+        if (section_header[i].sh_type == SHT_SYMTAB) //Symbol table section
+        {
+            Elf32_Sym *symtab = (Elf32_Sym *)(map_start + section_header[i].sh_offset);//start of symbol table
+            int symbols_num = section_header[i].sh_size / section_header[i].sh_entsize;
+            char *symbol_names = (char *)(map_start + section_header[section_header[i].sh_link].sh_offset);
+            for (int j = 0; j < symbols_num; j++)
+            {
+                char *symbol_name = symbol_names + symtab[j].st_name;
+                char *section_name = section_names + section_header[i].sh_name;
+                printf("%-2d:     %08x   %-12d  %-13s %s\n",
+                       index,
+                       symtab[j].st_value,
+                       symtab[j].st_shndx,
+                       section_name, 
+                       symbol_name);
+                index++;
+            }
+        }
+    }
 }
 
 int main(){

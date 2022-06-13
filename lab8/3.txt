@@ -1,0 +1,21 @@
+main size = 136
+section number = 14
+main's virtual address = 0x00000770
+section vaddr = 0x00000520
+section offset = 0x000520
+
+=>
+
+main's offset is 
+section_file_offset + function_virtual_address - section_virtual_address
+0x000520            +   0x00000770             -     0x00000520 =  0x00000770
+
+
+
+
+8D 4C 24 04  83 E4 F0 FF  71 FC 55 89  E5 53 51 83  EC 10 89 CB  83 3B 01 7F  1A 83 EC 0C  
+68 9F 08 00  00 E8 FC FF  FF FF 83 C4  10 83 EC 0C  6A 01 E8 FC  FF FF FF 8B  43 04 83 C0 
+04 8B 00 83  EC 0C 50 E8  FC FF FF FF  83 C4 10 83  EC 0C 50 E8  9D FE FF FF  83 C4 10 89  
+45 F4 8B 43  04 83 C0 04  8B 00 83 EC  0C 50 E8 FC  FF FF FF 83  C4 10 83 EC  08 FF 75 F4  
+50 E8 F1 FE  FF FF 83 C4  10 B8 00 00  00 00 8D 65  F8 59 5B 5D  8D 61 FC C3  66 90 66 90  
+66 90 66 90
